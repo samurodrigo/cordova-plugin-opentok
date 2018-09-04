@@ -166,25 +166,27 @@ var OTPublisherError, OTReplacePublisher, TBError, TBGenerateDomHelper, TBGetScr
 streamElements = {};
 
 getPosition = function(pubDiv) {
-  var computedStyle, curleft, curtop, height, width;
   if (!pubDiv) {
     return {};
   }
-  computedStyle = window.getComputedStyle ? getComputedStyle(pubDiv, null) : {};
-  width = pubDiv.offsetWidth;
-  height = pubDiv.offsetHeight;
-  curtop = pubDiv.offsetTop;
-  curleft = pubDiv.offsetLeft;
-  while ((pubDiv = pubDiv.offsetParent)) {
-    curleft += pubDiv.offsetLeft;
-    curtop += pubDiv.offsetTop;
+  var boundingRects = pubDiv.getBoundingClientRect ? pubDiv.getBoundingClientRect().toJSON() : null;
+  if(boundingRects) {
+    // for browsers that do not support width and height 
+    if(!boundingRects.width) {
+      boundingRects.width = (boundingRects.right - boundingRects.left);
+    }
+    if(!boundingRects.height) {
+      boundingRects.height = (boundingRects.bottom - boundingRects.top);  
+    }
   }
-  return {
-    top: curtop,
-    left: curleft,
-    width: width,
-    height: height
+  var position = {
+    width: pubDiv.offsetWidth,
+    height: pubDiv.offsetHeight,
+    top: pubDiv.offsetTop,
+    left: pubDiv.offsetLeft
   };
+
+  return boundingRects || position;
 };
 
 replaceWithVideoStream = function(element, streamId, properties) {
