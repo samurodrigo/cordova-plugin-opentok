@@ -166,26 +166,25 @@ var OTPublisherError, OTReplacePublisher, TBError, TBGenerateDomHelper, TBGetScr
 streamElements = {};
 
 getPosition = function(pubDiv) {
+  var boundingRects, position;
   if (!pubDiv) {
     return {};
   }
-  var boundingRects = pubDiv.getBoundingClientRect ? pubDiv.getBoundingClientRect().toJSON() : null;
-  if(boundingRects) {
-    // for browsers that do not support width and height 
-    if(!boundingRects.width) {
-      boundingRects.width = (boundingRects.right - boundingRects.left);
+  boundingRects = pubDiv.getBoundingClientRect ? pubDiv.getBoundingClientRect().toJSON() : null;
+  if (boundingRects) {
+    if (!boundingRects.width) {
+      boundingRects.width = boundingRects.right - boundingRects.left;
     }
-    if(!boundingRects.height) {
-      boundingRects.height = (boundingRects.bottom - boundingRects.top);  
+    if (!boundingRects.height) {
+      boundingRects.height = boundingRects.bottom - boundingRects.top;
     }
   }
-  var position = {
+  position = {
     width: pubDiv.offsetWidth,
     height: pubDiv.offsetHeight,
     top: pubDiv.offsetTop,
     left: pubDiv.offsetLeft
   };
-
   return boundingRects || position;
 };
 
